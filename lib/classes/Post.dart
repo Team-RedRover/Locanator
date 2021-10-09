@@ -9,6 +9,7 @@ class Post {
     this.uploadTime,
     this.numberOfReports,
     this.full,
+    this.id,
   });
 
   final File image;
@@ -17,4 +18,5 @@ class Post {
   final Timestamp uploadTime;
   final int numberOfReports;
   final bool full;
+  final String id;
 }
