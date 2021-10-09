@@ -4,9 +4,7 @@ import 'dart:io';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import '../Database/DbManager.dart';
-import '../Components/LocationFinder.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:flutter_guid/flutter_guid.dart';
 
 class MapSample extends StatefulWidget {
@@ -17,7 +15,6 @@ class MapSample extends StatefulWidget {
 class MapSampleState extends State<MapSample> {
   Completer<GoogleMapController> _controller = Completer();
 
-  LatLng currentPosition;
   Set<Marker> markers = Set();
   double currentZoom = 10.0;
 
@@ -77,7 +74,12 @@ class MapSampleState extends State<MapSample> {
 
   addMarker(
       double lat, double long, String id, String status, int numberOfReports) {
+    double hue = 0;
+    if (status == "Empty") {
+      hue = 90;
+    }
     Marker resultMarker = Marker(
+      icon: BitmapDescriptor.defaultMarkerWithHue(hue),
       markerId: MarkerId(id),
       infoWindow: InfoWindow(
           title: status,
@@ -170,7 +172,7 @@ class MapSampleState extends State<MapSample> {
                         // latitude = pos.latitude;
                         // longitude = pos.longitude;
                         latitude = 38.5219993;
-                        longitude = -122.184;
+                        longitude = -121.184;
                         print("lat: $latitude, long: $longitude");
                         dynamic response = await dbmanager.getDistanceMatch(
                             latitude, longitude);

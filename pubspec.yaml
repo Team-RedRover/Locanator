@@ -32,11 +32,12 @@ dependencies:
   firebase_auth: "^0.20.1"
   cloud_firestore: "^0.16.0+1"
   geolocator: ^6.1.13
-  firebase_storage: "^7.0.0"
+  # firebase_storage: "^7.0.0"
   image_picker: "0.6.7+17"
   flutter_guid: ^0.1.0
   flutter_svg: ^0.19.0
   google_maps_flutter: ^1.2.0
+  geocoding: ^1.0.5
 
 dev_dependencies:
   flutter_test:
