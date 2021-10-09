@@ -156,10 +156,43 @@ class MapSampleState extends State<MapSample> {
       _polylines.add(polyline);
       print("polyline set: ${_polylines.length}");
     });
+
+    // Calculating to check that the position relative
+    // to the frame, and pan & zoom the camera accordingly.
+    double miny = (startLatitude <= destinationLatitude)
+        ? startLatitude
+        : destinationLatitude;
+    double minx = (startLongitude <= destinationLongitude)
+        ? startLongitude
+        : destinationLongitude;
+    double maxy = (startLatitude <= destinationLatitude)
+        ? destinationLatitude
+        : startLatitude;
+    double maxx = (startLongitude <= destinationLongitude)
+        ? destinationLongitude
+        : startLongitude;
+
+    double southWestLatitude = miny;
+    double southWestLongitude = minx;
+
+    double northEastLatitude = maxy;
+    double northEastLongitude = maxx;
+
+    // Accommodate the two locations within the
+    // camera view of the map
+    mapController.animateCamera(
+      CameraUpdate.newLatLngBounds(
+        LatLngBounds(
+          northeast: LatLng(northEastLatitude, northEastLongitude),
+          southwest: LatLng(southWestLatitude, southWestLongitude),
+        ),
+        100.0,
+      ),
+    );
   }
 
-  addMarker(
-      double lat, double long, String id, String status, int numberOfReports) {
+  addMarker(double lat, double long, String id, String status,
+      int numberOfReports, bool load) {
     double hue = 0;
     if (status == "Empty") {
       hue = 90;
@@ -188,9 +221,13 @@ class MapSampleState extends State<MapSample> {
         ),
       );
     }
-    createPolylines(
-        _currentPosition.latitude, _currentPosition.longitude, lat, long);
-// Add it to Set
+
+    if (!load) {
+      createPolylines(
+          _currentPosition.latitude, _currentPosition.longitude, lat, long);
+    }
+
+    // Add it to Set
     setState(() {
       markers.add(resultMarker);
       print("markers: $markers");
@@ -213,9 +250,9 @@ class MapSampleState extends State<MapSample> {
         bool status = statuses[i];
         int numberOfReports = listOfReports[i];
         if (status == true) {
-          addMarker(lat, long, id, "Full", numberOfReports);
+          addMarker(lat, long, id, "Full", numberOfReports, true);
         } else {
-          addMarker(lat, long, id, "Empty", numberOfReports);
+          addMarker(lat, long, id, "Empty", numberOfReports, true);
         }
       }
       // createPolylines(lats[0], longs[0], lats[1], longs[1]);
@@ -277,16 +314,9 @@ class MapSampleState extends State<MapSample> {
                           ),
                         ),
                       ),
-                      // height: 30,
-                      // color: Colors.white,
-                      // shape: RoundedRectangleBorder(
-                      //     borderRadius: BorderRadius.all(Radius.circular(8))),
                       onPressed: () async {
                         Navigator.pop(context);
                         uploadTime = DateTime.now();
-                        // Position pos = await determinePosition();
-                        // latitude = pos.latitude;
-                        // longitude = pos.longitude;
                         latitude = 39.5219993;
                         longitude = -123.184;
                         print("lat: $latitude, long: $longitude");
@@ -302,9 +332,11 @@ class MapSampleState extends State<MapSample> {
                         } else {
                           String id = Guid.newGuid.toString();
                           if (full == true) {
-                            addMarker(latitude, longitude, id, "Full", 1);
+                            addMarker(
+                                latitude, longitude, id, "Full", 1, false);
                           } else {
-                            addMarker(latitude, longitude, id, "Empty", 1);
+                            addMarker(
+                                latitude, longitude, id, "Empty", 1, false);
                           }
                           dbmanager.uploadPost(image, latitude, longitude,
                               uploadTime, 1, full, id);
