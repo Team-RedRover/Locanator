@@ -65,8 +65,11 @@ class MapSampleState extends State<MapSample> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => onCameraClick(context),
-        child: const Icon(Icons.camera_alt),
-        backgroundColor: Colors.blueGrey,
+        child: const Icon(
+          Icons.camera_alt,
+          color: Colors.white,
+        ),
+        backgroundColor: Color(0xFF282a36),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
     );

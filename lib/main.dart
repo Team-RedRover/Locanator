@@ -19,6 +19,7 @@ class Locanator extends StatelessWidget {
       title: 'Locanator',
       home: Scaffold(
         appBar: AppBar(
+          toolbarHeight: 70,
           title: Row(
             children: [
               SvgPicture.asset(
@@ -38,7 +39,7 @@ class Locanator extends StatelessWidget {
               ),
             ],
           ),
-          backgroundColor: Color(0xFF788fa1),
+          backgroundColor: Color(0xFF282a36),
         ),
         body: MapSample(),
       ),
