@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import './Screens/Home.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import './Screens/MapSample.dart';
 
@@ -34,7 +33,6 @@ class Locanator extends StatelessWidget {
                     color: Colors.white,
                     fontWeight: FontWeight.w400,
                     fontSize: 24,
-                    
                   ),
                 ),
               ),

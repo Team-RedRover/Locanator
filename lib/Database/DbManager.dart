@@ -37,22 +37,28 @@ class DatabaseManager {
     List<double> lats = List<double>();
     List<double> longs = List<double>();
     List<String> ids = List<String>();
+    List<bool> statuses = List<bool>();
+    List<int> listOfReports = List<int>();
 
     await posts.get().then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
         double lat = doc["latitude"];
         double long = doc["longitude"];
         String id = doc["id"];
+        bool status = doc["full"];
+        int numberOfReports = doc['numberOfReports'];
         lats.add(lat);
         longs.add(long);
         ids.add(id);
+        statuses.add(status);
+        listOfReports.add(numberOfReports);
       });
     });
 
-    return [lats, longs, ids];
+    return [lats, longs, ids, statuses, listOfReports];
   }
 
-  Future<void> incrementReportCount(String id) async {
+  Future<int> incrementReportCount(String id) async {
     CollectionReference posts = FirebaseFirestore.instance.collection('posts');
 
     int initialReports;
@@ -72,7 +78,7 @@ class DatabaseManager {
       }
     });
 
-    // print("reports: $initialReports");
+    return initialReports + 1;
   }
 
   // loop through all trash cans in database, find match if below a certain distanceThreshold, break once match is found
