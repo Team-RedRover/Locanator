@@ -1,14 +1,10 @@
 import 'dart:io';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import '../classes/Post.dart';
 import '../Components/LocationFinder.dart';
 import 'package:image_picker/image_picker.dart';
-import '../Components/DistanceFinder.dart';
 import '../Database/DbManager.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 // TODO: admin panel, admin login, ML image analysis, statistics, user backend ratings, optional user login, pathfinder maps, complaints
 

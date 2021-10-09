@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import '../Database/DbManager.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_guid/flutter_guid.dart';
+import './.env.dart';
 
 class MapSample extends StatefulWidget {
   @override
@@ -123,7 +124,7 @@ class MapSampleState extends State<MapSample> {
     // Generating the list of coordinates to be used for
     // drawing the polylines
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      "AIzaSyDhWzRHK9gDXJJboj4g0OmC9tmnIXS4Wnc", // Google Maps API Key
+      API_KEY, // Google Maps API Key
       PointLatLng(startLatitude, startLongitude),
       PointLatLng(destinationLatitude, destinationLongitude),
     );
