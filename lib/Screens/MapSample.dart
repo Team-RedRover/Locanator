@@ -150,7 +150,7 @@ class MapSampleState extends State<MapSample> {
                             activeColor: Colors.white,
                             value: this.full,
                             onChanged: (bool value) {
-                              print("CHANGED CHECKBOX");
+                              // print("CHANGED CHECKBOX");
                               setState(() {
                                 this.full = value;
                               });

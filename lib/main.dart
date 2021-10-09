@@ -35,7 +35,8 @@ class _LocanatorState extends State<Locanator> {
                 size: 27,
               ),
               itemBuilder: (BuildContext context) {
-                return {'Help', 'Report', 'Settings'}.map((String choice) {
+                return {'Help', 'Report', 'Settings', 'Login'}
+                    .map((String choice) {
                   return PopupMenuItem<String>(
                     value: choice,
                     child: Row(
@@ -44,7 +45,9 @@ class _LocanatorState extends State<Locanator> {
                             ? Icon(Icons.help, color: Colors.white)
                             : choice == "Settings"
                                 ? Icon(Icons.settings, color: Colors.white)
-                                : Icon(Icons.report, color: Colors.white),
+                                : choice == "Report"
+                                    ? Icon(Icons.report, color: Colors.white)
+                                    : Icon(Icons.person, color: Colors.white),
                         SizedBox(
                           width: 15,
                         ),
