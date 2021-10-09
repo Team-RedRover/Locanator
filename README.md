@@ -1,6 +1,6 @@
 # locanator
 
-A new Flutter project.
+The Locanator app is created by the Red Rover senior team for TISB Hacks 2021.
 
 ## Getting Started
 
