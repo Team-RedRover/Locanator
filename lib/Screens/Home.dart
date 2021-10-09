@@ -8,6 +8,7 @@ import '../Components/LocationFinder.dart';
 import 'package:image_picker/image_picker.dart';
 import '../Components/DistanceFinder.dart';
 import '../Database/DbManager.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 // TODO: admin panel, admin login, ML image analysis, statistics, user backend ratings, optional user login, pathfinder maps, complaints
 
@@ -36,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  @override // optional bro
+  @override
   Widget build(BuildContext context) {
     return Container(
       child: Center(
@@ -86,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       .replaceAll(".", "dot")
                       .replaceAll(":", "colon");
                   dbmanager.uploadPost(
-                      image, latitude, longitude, uploadTime, 1, full);
+                      image, latitude, longitude, uploadTime, 1, full, "");
                 }
               },
             ),

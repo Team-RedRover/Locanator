@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../Components/DistanceFinder.dart';
-import 'package:flutter_guid/flutter_guid.dart';
 import 'dart:io';
 
 class DatabaseManager {
@@ -11,10 +11,9 @@ class DatabaseManager {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Future<void> uploadPost(File image, double latitude, double longitude,
-      DateTime uploadTime, int numberOfReports, bool full) async {
+      DateTime uploadTime, int numberOfReports, bool full, String id) async {
     CollectionReference posts = FirebaseFirestore.instance.collection('posts');
     // generate unique guid, no check for clash, but incredibly unlikely so -_-
-    String id = Guid.newGuid.toString();
 
     // uploads data into firestore
     return posts
@@ -30,6 +29,27 @@ class DatabaseManager {
         .then((value) =>
             print("'latitude' & 'longitude' merged with existing data!"))
         .catchError((error) => print("Failed to merge data: $error"));
+  }
+
+  Future<dynamic> loadMarkers() async {
+    CollectionReference posts = FirebaseFirestore.instance.collection('posts');
+
+    List<double> lats = List<double>();
+    List<double> longs = List<double>();
+    List<String> ids = List<String>();
+
+    await posts.get().then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        double lat = doc["latitude"];
+        double long = doc["longitude"];
+        String id = doc["id"];
+        lats.add(lat);
+        longs.add(long);
+        ids.add(id);
+      });
+    });
+
+    return [lats, longs, ids];
   }
 
   Future<void> incrementReportCount(String id) async {

@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import './Screens/Home.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import './Screens/MapSample.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +34,7 @@ class Locanator extends StatelessWidget {
                     color: Colors.white,
                     fontWeight: FontWeight.w400,
                     fontSize: 24,
+                    
                   ),
                 ),
               ),
@@ -40,7 +42,7 @@ class Locanator extends StatelessWidget {
           ),
           backgroundColor: Color(0xFF788fa1),
         ),
-        body: HomeScreen(),
+        body: MapSample(),
       ),
     );
   }
