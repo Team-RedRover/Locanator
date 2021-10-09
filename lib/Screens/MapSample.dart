@@ -15,10 +15,9 @@ class MapSample extends StatefulWidget {
 }
 
 class MapSampleState extends State<MapSample> {
-  Completer<GoogleMapController> _controller = Completer();
-
   Set<Marker> markers = Set();
   double currentZoom = 10.0;
+  Position _currentPosition;
 
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.4219983, -122.084),
@@ -29,11 +28,12 @@ class MapSampleState extends State<MapSample> {
   void initState() {
     super.initState();
     loadMarkers();
+    getCurrentLocation();
   }
 
   GoogleMapController mapController;
   List<LatLng> polylineCoordinates = [];
-  Map<PolylineId, Polyline> polylines = {};
+  List<Polyline> _polylines = [];
   PolylinePoints polylinePoints = PolylinePoints();
 
   DatabaseManager dbmanager = DatabaseManager();
@@ -64,7 +64,7 @@ class MapSampleState extends State<MapSample> {
         onMapCreated: (GoogleMapController controller) {
           mapController = controller;
         },
-        polylines: Set<Polyline>.of(polylines.values),
+        polylines: Set<Polyline>.of(_polylines),
         zoomControlsEnabled: true,
         myLocationButtonEnabled: true,
         markers: markers,
@@ -82,12 +82,41 @@ class MapSampleState extends State<MapSample> {
     );
   }
 
+  getCurrentLocation() async {
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) async {
+      setState(() {
+        // Store the position in the variable
+        _currentPosition = position;
+
+        print('CURRENT POS: $_currentPosition');
+
+        // For moving the camera to current location
+        mapController.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: LatLng(position.latitude, position.longitude),
+              zoom: 18.0,
+            ),
+          ),
+        );
+      });
+    }).catchError((e) {
+      print(e);
+    });
+  }
+
   createPolylines(
     double startLatitude,
     double startLongitude,
     double destinationLatitude,
     double destinationLongitude,
   ) async {
+    setState(() {
+      _polylines.clear();
+      polylineCoordinates.clear();
+    });
+
     print(
         "startLan: $startLatitude \nstartLon: $startLongitude \ndestLan: $destinationLatitude \ndestLon: $destinationLongitude");
 
@@ -112,11 +141,11 @@ class MapSampleState extends State<MapSample> {
     print("coordinates: $polylineCoordinates");
 
     // Defining an ID
-    PolylineId id = PolylineId('poly');
+    PolylineId polyId = PolylineId('poly');
 
     // Initializing Polyline
     Polyline polyline = Polyline(
-      polylineId: id,
+      polylineId: polyId,
       color: Colors.red,
       points: polylineCoordinates,
       width: 3,
@@ -124,7 +153,8 @@ class MapSampleState extends State<MapSample> {
 
     // Adding the polyline to the map
     setState(() {
-      polylines[id] = polyline;
+      _polylines.add(polyline);
+      print("polyline set: ${_polylines.length}");
     });
   }
 
@@ -135,13 +165,16 @@ class MapSampleState extends State<MapSample> {
       hue = 90;
     }
     Marker resultMarker = Marker(
-      icon: BitmapDescriptor.defaultMarkerWithHue(hue),
-      markerId: MarkerId(id),
-      infoWindow: InfoWindow(
-          title: status,
-          snippet: numberOfReports.toString() + " total reports"),
-      position: LatLng(lat, long),
-    );
+        icon: BitmapDescriptor.defaultMarkerWithHue(hue),
+        markerId: MarkerId(id),
+        infoWindow: InfoWindow(
+            title: status,
+            snippet: numberOfReports.toString() + " total reports"),
+        position: LatLng(lat, long),
+        onTap: () {
+          createPolylines(
+              _currentPosition.latitude, _currentPosition.longitude, lat, long);
+        });
     if (mapController != null) {
       mapController.animateCamera(
         CameraUpdate.newCameraPosition(
@@ -155,6 +188,8 @@ class MapSampleState extends State<MapSample> {
         ),
       );
     }
+    createPolylines(
+        _currentPosition.latitude, _currentPosition.longitude, lat, long);
 // Add it to Set
     setState(() {
       markers.add(resultMarker);
@@ -183,7 +218,7 @@ class MapSampleState extends State<MapSample> {
           addMarker(lat, long, id, "Empty", numberOfReports);
         }
       }
-      createPolylines(lats[0], longs[0], lats[1], longs[1]);
+      // createPolylines(lats[0], longs[0], lats[1], longs[1]);
     });
   }
 
@@ -253,7 +288,7 @@ class MapSampleState extends State<MapSample> {
                         // latitude = pos.latitude;
                         // longitude = pos.longitude;
                         latitude = 39.5219993;
-                        longitude = -121.184;
+                        longitude = -123.184;
                         print("lat: $latitude, long: $longitude");
                         dynamic response = await dbmanager.getDistanceMatch(
                             latitude, longitude);
