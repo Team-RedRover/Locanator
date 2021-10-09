@@ -317,7 +317,7 @@ class MapSampleState extends State<MapSample> {
                       onPressed: () async {
                         Navigator.pop(context);
                         uploadTime = DateTime.now();
-                        latitude = 39.5219993;
+                        latitude = 39.5219983;
                         longitude = -123.184;
                         print("lat: $latitude, long: $longitude");
                         dynamic response = await dbmanager.getDistanceMatch(
@@ -327,8 +327,24 @@ class MapSampleState extends State<MapSample> {
                         String matchId = response[1];
 
                         if (match) {
-                          await dbmanager
+                          int newReports = await dbmanager
                               .incrementReportCount(matchId.toString());
+                          if (!mounted) return;
+                          // markers.forEach((element) {
+                          //   print("element id: ${element.markerId}");
+                          // });
+                          // print("match id: $matchId");
+                          Marker mark = markers.firstWhere(
+                              (marker) => marker.markerId.value == matchId);
+                          print("Deleting mark");
+                          markers.remove(mark);
+                          addMarker(
+                              mark.position.latitude,
+                              mark.position.longitude,
+                              matchId,
+                              mark.infoWindow.title,
+                              newReports,
+                              false);
                         } else {
                           String id = Guid.newGuid.toString();
                           if (full == true) {
