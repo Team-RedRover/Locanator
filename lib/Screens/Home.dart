@@ -1,8 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import '../classes/Post.dart';
 import 'package:geolocator/geolocator.dart';
+import '../classes/Post.dart';
+import '../Components/LocationFinder.dart';
 import 'package:image_picker/image_picker.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -44,6 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () async {
                 await pickImage();
                 uploadTime = DateTime.now();
+                Position pos = await determinePosition();
+                print("lat: ${pos.latitude}, long: ${pos.longitude}");
               },
             ),
             image != null ? Image.file(image) : Text("Image not picked yet")
