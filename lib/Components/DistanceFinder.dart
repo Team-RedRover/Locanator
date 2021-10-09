@@ -22,5 +22,5 @@ double deg2rad(deg) {
 }
 
 double rad2deg(rad) {
-  return rad * (180 / Math.pi); 
+  return rad * (180 / Math.pi);
 }
