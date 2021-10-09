@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "331068526143",
+    "project_id": "locanator-71ddd",
+    "storage_bucket": "locanator-71ddd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331068526143:android:0dafb33d8ce9684ed0328a",
+        "android_client_info": {
+          "package_name": "com.example.locanator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331068526143-7fsjcdvbv1h75f8gnm6tqtt48rupvn72.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqBtDBpqkEGRD5-Xdt5n70fNi4i1y0DNs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331068526143-7fsjcdvbv1h75f8gnm6tqtt48rupvn72.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
