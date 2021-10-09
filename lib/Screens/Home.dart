@@ -45,12 +45,13 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FlatButton(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8))),
-              color: Colors.grey,
-              child: Text(
-                'Take an image!',
-                style: TextStyle(color: Colors.white),
+              height: 60,
+              shape: CircleBorder(),
+              color: Colors.blueGrey,
+              child: Icon(
+                Icons.camera_alt,
+                color: Colors.white,
+                size: 20,
               ),
               onPressed: () async {
                 await pickImage();
@@ -66,11 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 bool match = response[0];
                 String matchId = response[1];
-
-                // String latStr = latitude.toStringAsFixed(2);
-                // String longStr = longitude.toStringAsFixed(2);
-                // id = latStr.replaceAll('-', 'negative').replaceAll('.', 'dot') +
-                //     longStr.replaceAll('-', 'negative').replaceAll('.', 'dot');
 
                 if (match) {
                   dbmanager
@@ -117,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ), //Checkbox
               ], //<Widget>[]
             ),
-            image != null ? Image.file(image) : Text("Image not picked yet")
+            image != null ? Image.file(image) : Text("")
           ],
         ),
       ),

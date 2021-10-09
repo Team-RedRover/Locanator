@@ -60,6 +60,8 @@ class DatabaseManager {
     CollectionReference posts = FirebaseFirestore.instance.collection('posts');
 
     bool match = false;
+    // distanceThreshold = 50m (0.05km)
+    double distanceThreshold = 0.05;
     String postid;
 
     await posts.get().then((QuerySnapshot querySnapshot) {
@@ -67,12 +69,11 @@ class DatabaseManager {
         double lat2 = doc["latitude"];
         String id = doc["id"];
         double long2 = doc["longitude"];
-        // distanceThreshold = 50m (0.05km)
         double distance = getDistanceFromLatLonInKm(lat, long, lat2, long2);
 
         print("distance: $distance");
 
-        if (distance < 0.05) {
+        if (distance < distanceThreshold) {
           postid = id;
           match = true;
         }
