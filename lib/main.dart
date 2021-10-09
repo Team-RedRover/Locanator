@@ -32,7 +32,7 @@ class Locanator extends StatelessWidget {
                 ),
               ),
             ),
-            //   FlatButton(
+            //   TextButton(
             //       onPressed: () => {},
             //       child: Text(
             //         "Menu",

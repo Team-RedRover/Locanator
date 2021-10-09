@@ -159,19 +159,30 @@ class MapSampleState extends State<MapSample> {
                         ),
                       ],
                     ),
-                    FlatButton(
+                    TextButton(
                       child: Text("Submit"),
-                      height: 30,
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.white),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(8),
+                            ),
+                          ),
+                        ),
+                      ),
+                      // height: 30,
+                      // color: Colors.white,
+                      // shape: RoundedRectangleBorder(
+                      //     borderRadius: BorderRadius.all(Radius.circular(8))),
                       onPressed: () async {
                         Navigator.pop(context);
                         uploadTime = DateTime.now();
                         // Position pos = await determinePosition();
                         // latitude = pos.latitude;
                         // longitude = pos.longitude;
-                        latitude = 38.5219993;
+                        latitude = 39.5219993;
                         longitude = -121.184;
                         print("lat: $latitude, long: $longitude");
                         dynamic response = await dbmanager.getDistanceMatch(

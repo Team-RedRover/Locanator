@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool full = false;
 
   Future pickImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
       setState(() {
@@ -45,10 +45,11 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FlatButton(
-              height: 60,
-              shape: CircleBorder(),
-              color: Colors.blueGrey,
+            TextButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.blueGrey),
+                shape: MaterialStateProperty.all(CircleBorder()),
+              ),
               child: Icon(
                 Icons.camera_alt,
                 color: Colors.white,
