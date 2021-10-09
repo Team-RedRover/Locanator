@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import '../Database/DbManager.dart';
@@ -29,6 +31,11 @@ class MapSampleState extends State<MapSample> {
     loadMarkers();
   }
 
+  GoogleMapController mapController;
+  List<LatLng> polylineCoordinates = [];
+  Map<PolylineId, Polyline> polylines = {};
+  PolylinePoints polylinePoints = PolylinePoints();
+
   DatabaseManager dbmanager = DatabaseManager();
   final picker = ImagePicker();
   File image;
@@ -52,11 +59,14 @@ class MapSampleState extends State<MapSample> {
   Widget build(BuildContext context) {
     return new Scaffold(
       body: GoogleMap(
-        mapType: MapType.hybrid,
+        mapType: MapType.normal,
         initialCameraPosition: _kGooglePlex,
         onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
+          mapController = controller;
         },
+        polylines: Set<Polyline>.of(polylines.values),
+        zoomControlsEnabled: true,
+        myLocationButtonEnabled: true,
         markers: markers,
         myLocationEnabled: true,
       ),
@@ -70,6 +80,52 @@ class MapSampleState extends State<MapSample> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
     );
+  }
+
+  createPolylines(
+    double startLatitude,
+    double startLongitude,
+    double destinationLatitude,
+    double destinationLongitude,
+  ) async {
+    print(
+        "startLan: $startLatitude \nstartLon: $startLongitude \ndestLan: $destinationLatitude \ndestLon: $destinationLongitude");
+
+    // Generating the list of coordinates to be used for
+    // drawing the polylines
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      "AIzaSyDhWzRHK9gDXJJboj4g0OmC9tmnIXS4Wnc", // Google Maps API Key
+      PointLatLng(startLatitude, startLongitude),
+      PointLatLng(destinationLatitude, destinationLongitude),
+    );
+
+    // print("result: ${result.points}");
+
+    // Adding the coordinates to the list
+    if (result.points.isNotEmpty) {
+      // print("result points: ${result.points}");
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+    }
+
+    print("coordinates: $polylineCoordinates");
+
+    // Defining an ID
+    PolylineId id = PolylineId('poly');
+
+    // Initializing Polyline
+    Polyline polyline = Polyline(
+      polylineId: id,
+      color: Colors.red,
+      points: polylineCoordinates,
+      width: 3,
+    );
+
+    // Adding the polyline to the map
+    setState(() {
+      polylines[id] = polyline;
+    });
   }
 
   addMarker(
@@ -86,6 +142,19 @@ class MapSampleState extends State<MapSample> {
           snippet: numberOfReports.toString() + " total reports"),
       position: LatLng(lat, long),
     );
+    if (mapController != null) {
+      mapController.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: LatLng(
+              lat,
+              long,
+            ),
+            zoom: 10.0,
+          ),
+        ),
+      );
+    }
 // Add it to Set
     setState(() {
       markers.add(resultMarker);
@@ -114,6 +183,7 @@ class MapSampleState extends State<MapSample> {
           addMarker(lat, long, id, "Empty", numberOfReports);
         }
       }
+      createPolylines(lats[0], longs[0], lats[1], longs[1]);
     });
   }
 
