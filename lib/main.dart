@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -46,6 +47,11 @@ class _LocanatorState extends State<Locanator> {
               Icons.menu,
               size: 27,
             ),
+            onSelected: (String result) async {
+              if (result == "Logout") {
+                await FirebaseAuth.instance.signOut();
+              }
+            },
             itemBuilder: (BuildContext context) {
               return {'Help', 'Report', 'Settings', 'Logout'}
                   .map((String choice) {
@@ -60,7 +66,6 @@ class _LocanatorState extends State<Locanator> {
                               : choice == "Report"
                                   ? Icon(Icons.report, color: Colors.white)
                                   : Icon(Icons.logout, color: Colors.white),
-                      // : Icon(Icons.person, color: Colors.white),
                       SizedBox(
                         width: 15,
                       ),

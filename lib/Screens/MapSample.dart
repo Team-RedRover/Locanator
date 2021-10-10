@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
@@ -254,6 +255,14 @@ class MapSampleState extends State<MapSample> {
               _currentPosition.latitude, _currentPosition.longitude, lat, long);
           _placeDistance = getDistanceFromLatLonInKm(
               _currentPosition.latitude, _currentPosition.longitude, lat, long);
+
+          var currentUser = FirebaseAuth.instance.currentUser;
+
+          if (currentUser != null) {
+            print("User is signed in: ${currentUser.uid}");
+          } else {
+            print("User is signed out");
+          }
         });
     if (mapController != null) {
       mapController.animateCamera(
@@ -271,6 +280,8 @@ class MapSampleState extends State<MapSample> {
 
     if (!load) {
       createPolylines(
+          _currentPosition.latitude, _currentPosition.longitude, lat, long);
+      _placeDistance = getDistanceFromLatLonInKm(
           _currentPosition.latitude, _currentPosition.longitude, lat, long);
     }
 
