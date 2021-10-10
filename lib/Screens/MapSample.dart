@@ -6,6 +6,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:locanator/Components/DistanceFinder.dart';
 import '../Database/DbManager.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_guid/flutter_guid.dart';
@@ -21,6 +22,7 @@ class MapSampleState extends State<MapSample> {
   Set<Marker> markers = Set();
   double currentZoom = 10.0;
   Position _currentPosition;
+  double _placeDistance;
 
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.4219983, -122.084),
@@ -62,17 +64,55 @@ class MapSampleState extends State<MapSample> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (GoogleMapController controller) {
-          mapController = controller;
-        },
-        polylines: Set<Polyline>.of(_polylines),
-        zoomControlsEnabled: true,
-        myLocationButtonEnabled: true,
-        markers: markers,
-        myLocationEnabled: true,
+      body: Stack(
+        children: [
+          GoogleMap(
+            mapType: MapType.normal,
+            initialCameraPosition: _kGooglePlex,
+            onMapCreated: (GoogleMapController controller) {
+              mapController = controller;
+            },
+            polylines: Set<Polyline>.of(_polylines),
+            zoomControlsEnabled: true,
+            myLocationButtonEnabled: true,
+            markers: markers,
+            myLocationEnabled: true,
+          ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Visibility(
+                    visible: _placeDistance == null ? false : true,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(25),
+                        ),
+                        color: Color(0xFF282a36),
+                      ),
+                      width: 200,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Text(
+                          'DISTANCE: ${_placeDistance != null ? _placeDistance.toStringAsFixed(2) : "0"} km',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => onCameraClick(context),
@@ -211,6 +251,8 @@ class MapSampleState extends State<MapSample> {
         position: LatLng(lat, long),
         onTap: () {
           createPolylines(
+              _currentPosition.latitude, _currentPosition.longitude, lat, long);
+          _placeDistance = getDistanceFromLatLonInKm(
               _currentPosition.latitude, _currentPosition.longitude, lat, long);
         });
     if (mapController != null) {
