@@ -173,6 +173,7 @@ class MapSampleState extends State<MapSample> {
       API_KEY, // Google Maps API Key
       PointLatLng(startLatitude, startLongitude),
       PointLatLng(destinationLatitude, destinationLongitude),
+      travelMode: TravelMode.walking,
     );
 
     // print("result: ${result.points}");
@@ -256,8 +257,12 @@ class MapSampleState extends State<MapSample> {
 
           if (currentUser != null) {
             print("User is signed in: ${currentUser.uid}");
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => MarkerScreen()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => MarkerScreen(
+                          markerId: id,
+                        )));
 
             createPolylines(_currentPosition.latitude,
                 _currentPosition.longitude, lat, long);
@@ -413,10 +418,10 @@ class MapSampleState extends State<MapSample> {
                         uploadTime = DateTime.now();
                         // latitude = 37.4219983;
                         // longitude = -122.100;
-                        // latitude = 37.4119983;
-                        // longitude = -122.100;
                         latitude = 37.4119983;
-                        longitude = -122.08;
+                        longitude = -122.100;
+                        // latitude = 37.4119983;
+                        // longitude = -122.08;
                         print("lat: $latitude, long: $longitude");
                         dynamic response = await dbmanager.getDistanceMatch(
                             latitude, longitude);

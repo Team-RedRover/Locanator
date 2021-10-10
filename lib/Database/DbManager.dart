@@ -158,4 +158,15 @@ class DatabaseManager {
 
     return [match, postid];
   }
+
+  Future markAsEmpty(String id) async {
+    CollectionReference posts = FirebaseFirestore.instance.collection('posts');
+
+    return await posts
+        .doc(id)
+        .update({'full': false})
+        .then((value) => print("Number of Reports Updated"))
+        .catchError(
+            (error) => print("Failed to update Number of Reports: $error"));
+  }
 }
