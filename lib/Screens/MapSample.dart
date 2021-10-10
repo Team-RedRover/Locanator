@@ -418,10 +418,16 @@ class MapSampleState extends State<MapSample> {
                         uploadTime = DateTime.now();
                         // latitude = 37.4219983;
                         // longitude = -122.100;
-                        latitude = 37.4119983;
-                        longitude = -122.100;
+                        // latitude = 37.4119983;
+                        // longitude = -122.100;
                         // latitude = 37.4119983;
                         // longitude = -122.08;
+                        // latitude = 37.4219983;
+                        // longitude = -122.08;
+                        // latitude = 37.4135983;
+                        // longitude = -122.08;
+                        latitude = 37.4135983;
+                        longitude = -122.09;
                         print("lat: $latitude, long: $longitude");
                         dynamic response = await dbmanager.getDistanceMatch(
                             latitude, longitude);
