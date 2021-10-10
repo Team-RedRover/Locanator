@@ -8,6 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:locanator/Components/DistanceFinder.dart';
+import 'package:locanator/Screens/Marker.dart';
 import '../Database/DbManager.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_guid/flutter_guid.dart';
@@ -251,17 +252,29 @@ class MapSampleState extends State<MapSample> {
             snippet: numberOfReports.toString() + " total reports"),
         position: LatLng(lat, long),
         onTap: () {
-          createPolylines(
-              _currentPosition.latitude, _currentPosition.longitude, lat, long);
-          _placeDistance = getDistanceFromLatLonInKm(
-              _currentPosition.latitude, _currentPosition.longitude, lat, long);
-
           var currentUser = FirebaseAuth.instance.currentUser;
 
           if (currentUser != null) {
             print("User is signed in: ${currentUser.uid}");
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => MarkerScreen()));
+
+            createPolylines(_currentPosition.latitude,
+                _currentPosition.longitude, lat, long);
+            _placeDistance = getDistanceFromLatLonInKm(
+                _currentPosition.latitude,
+                _currentPosition.longitude,
+                lat,
+                long);
           } else {
             print("User is signed out");
+            createPolylines(_currentPosition.latitude,
+                _currentPosition.longitude, lat, long);
+            _placeDistance = getDistanceFromLatLonInKm(
+                _currentPosition.latitude,
+                _currentPosition.longitude,
+                lat,
+                long);
           }
         });
     if (mapController != null) {
@@ -398,8 +411,12 @@ class MapSampleState extends State<MapSample> {
                       onPressed: () async {
                         Navigator.pop(context);
                         uploadTime = DateTime.now();
-                        latitude = 37.4219983;
-                        longitude = -122.100;
+                        // latitude = 37.4219983;
+                        // longitude = -122.100;
+                        // latitude = 37.4119983;
+                        // longitude = -122.100;
+                        latitude = 37.4119983;
+                        longitude = -122.08;
                         print("lat: $latitude, long: $longitude");
                         dynamic response = await dbmanager.getDistanceMatch(
                             latitude, longitude);
