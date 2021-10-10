@@ -97,15 +97,6 @@ class _LocanatorState extends State<Locanator> {
       body: MapSample(),
     );
   }
-
-  loginScreen() {
-    return showModalBottomSheet<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return Login();
-      },
-    );
-  }
 }
 
 // class Locanator extends StatelessWidget {

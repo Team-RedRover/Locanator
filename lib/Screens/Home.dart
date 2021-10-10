@@ -6,7 +6,7 @@ import '../Components/LocationFinder.dart';
 import 'package:image_picker/image_picker.dart';
 import '../Database/DbManager.dart';
 
-// TODO: admin panel, images preview, reset marker, deviceID json, admin login, ML image analysis, statistics, user backend ratings, optional user login
+// TODO: admin panel: (images preview, reset marker), deviceID json, admin login, ML image analysis, statistics, user backend ratings, optional user login
 
 class HomeScreen extends StatefulWidget {
   @override

@@ -30,8 +30,8 @@ class MapSampleState extends State<MapSample> {
   @override
   void initState() {
     super.initState();
-    loadMarkers();
     getCurrentLocation();
+    loadMarkers();
   }
 
   GoogleMapController mapController;
@@ -87,6 +87,7 @@ class MapSampleState extends State<MapSample> {
   }
 
   getCurrentLocation() async {
+    print("Getting current locations");
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) async {
       setState(() {
@@ -290,7 +291,7 @@ class MapSampleState extends State<MapSample> {
           builder: (BuildContext context, StateSetter setState) {
             return Container(
               height: 60,
-              color: Colors.blueGrey,
+              color: Color(0xFF282a36),
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -310,7 +311,7 @@ class MapSampleState extends State<MapSample> {
                         Theme(
                           data: ThemeData(unselectedWidgetColor: Colors.white),
                           child: Checkbox(
-                            checkColor: Colors.blueGrey,
+                            checkColor: Color(0xFF282a36),
                             activeColor: Colors.white,
                             value: this.full,
                             onChanged: (bool value) {
@@ -324,7 +325,12 @@ class MapSampleState extends State<MapSample> {
                       ],
                     ),
                     TextButton(
-                      child: Text("Submit"),
+                      child: Text(
+                        "Submit",
+                        style: TextStyle(
+                          color: Color(0xFF282a36),
+                        ),
+                      ),
                       style: ButtonStyle(
                         backgroundColor:
                             MaterialStateProperty.all(Colors.white),
@@ -339,8 +345,8 @@ class MapSampleState extends State<MapSample> {
                       onPressed: () async {
                         Navigator.pop(context);
                         uploadTime = DateTime.now();
-                        latitude = 38.5229883;
-                        longitude = -121.184;
+                        latitude = 37.4219983;
+                        longitude = -122.100;
                         print("lat: $latitude, long: $longitude");
                         dynamic response = await dbmanager.getDistanceMatch(
                             latitude, longitude);
@@ -349,25 +355,37 @@ class MapSampleState extends State<MapSample> {
                         String matchId = response[1];
 
                         if (match) {
-                          int newReports = await dbmanager
-                              .incrementReportCount(matchId.toString());
-                          if (!mounted) return;
-                          Marker mark = markers.firstWhere(
-                              (marker) => marker.markerId.value == matchId);
-                          print("Deleting mark");
-                          markers.remove(mark);
-                          addMarker(
-                              mark.position.latitude,
-                              mark.position.longitude,
-                              matchId,
-                              mark.infoWindow.title,
-                              newReports,
-                              false);
+                          String deviceId = await getIdentifier();
+                          print("deviceID: $deviceId");
+
+                          bool verified = await dbmanager.verifyDeviceId(
+                              deviceId, matchId.toString());
+                          if (verified) {
+                            int newReports = await dbmanager
+                                .incrementReportCount(matchId.toString());
+                            // if (!mounted) return;
+                            Marker mark = markers.firstWhere(
+                                (marker) => marker.markerId.value == matchId);
+                            print("Deleting mark");
+                            markers.remove(mark);
+                            addMarker(
+                                mark.position.latitude,
+                                mark.position.longitude,
+                                matchId,
+                                mark.infoWindow.title,
+                                newReports,
+                                false);
+                          } else {
+                            return AlertDialog(
+                                title: Text("Sample Alert Dialog"));
+                          }
                         } else {
                           String id = Guid.newGuid.toString();
                           String deviceId = await getIdentifier();
 
                           List<String> deviceIds = [deviceId];
+
+                          print("deviceID: $deviceId");
 
                           if (full == true) {
                             addMarker(

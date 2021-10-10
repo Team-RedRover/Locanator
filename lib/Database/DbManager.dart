@@ -29,7 +29,7 @@ class DatabaseManager {
           'full': full,
           'numberOfReports': numberOfReports,
           'id': id,
-          'deviceId': deviceIds
+          'deviceIds': deviceIds
         })
         .then((value) =>
             print("'latitude' & 'longitude' merged with existing data!"))
@@ -38,6 +38,8 @@ class DatabaseManager {
 
   Future<dynamic> loadMarkers() async {
     CollectionReference posts = FirebaseFirestore.instance.collection('posts');
+
+    print("Loading markers");
 
     List<double> lats = [];
     List<double> longs = [];
@@ -48,6 +50,7 @@ class DatabaseManager {
 
     await posts.get().then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
+        print("doc: $doc");
         double lat = doc["latitude"];
         double long = doc["longitude"];
         String id = doc["id"];
@@ -62,6 +65,8 @@ class DatabaseManager {
         // deviceIds.add(deviceId);
       });
     });
+
+    print("lats: $lats");
 
     return [lats, longs, ids, statuses, listOfReports];
   }
@@ -87,6 +92,41 @@ class DatabaseManager {
     });
 
     return initialReports + 1;
+  }
+
+  Future<bool> verifyDeviceId(String deviceId, String id) async {
+    CollectionReference posts = FirebaseFirestore.instance.collection('posts');
+
+    List<String> deviceIds = [];
+
+    await posts.doc(id).get().then((DocumentSnapshot documentSnapshot) async {
+      if (documentSnapshot.exists) {
+        dynamic data = documentSnapshot.data();
+        deviceIds = data['deviceIds'];
+
+        print("deviceIds: $deviceIds");
+        print("deviceId: $deviceId");
+
+        if (deviceIds.contains(deviceId)) {
+          return false;
+        } else {
+          deviceIds.add(deviceId);
+          await posts
+              .doc(id)
+              .update({'deviceIds': deviceIds})
+              .then((value) => print("Number of deviceIds Updated"))
+              .catchError((error) =>
+                  print("Failed to update Number of deviceIds: $error"));
+          return true;
+        }
+      }
+    });
+
+    if (deviceIds.length == 1) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   // loop through all trash cans in database, find match if below a certain distanceThreshold, break once match is found
