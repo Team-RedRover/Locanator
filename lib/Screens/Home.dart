@@ -6,7 +6,7 @@ import '../Components/LocationFinder.dart';
 import 'package:image_picker/image_picker.dart';
 import '../Database/DbManager.dart';
 
-// TODO: admin panel, admin login, ML image analysis, statistics, user backend ratings, optional user login, pathfinder maps, complaints
+// TODO: admin panel, images preview, reset marker, deviceID json, admin login, ML image analysis, statistics, user backend ratings, optional user login
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -83,8 +83,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       .replaceAll("-", "dash")
                       .replaceAll(".", "dot")
                       .replaceAll(":", "colon");
-                  dbmanager.uploadPost(
-                      image, latitude, longitude, uploadTime, 1, full, "");
+                  dbmanager.uploadPost(image, latitude, longitude, uploadTime,
+                      1, full, "", null);
                 }
               },
             ),

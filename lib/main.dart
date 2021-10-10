@@ -2,11 +2,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import './Screens/MapSample.dart';
+import './Screens/Login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(Locanator());
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    title: 'Locanator',
+    home: Locanator(),
+  ));
 }
 
 class Locanator extends StatefulWidget {
@@ -20,71 +25,85 @@ class _LocanatorState extends State<Locanator> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Locanator',
-      home: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 70,
-          automaticallyImplyLeading: false,
-          actions: <Widget>[
-            PopupMenuButton<String>(
-              color: Color(0xFF44475a),
-              icon: Icon(
-                Icons.menu,
-                size: 27,
-              ),
-              itemBuilder: (BuildContext context) {
-                return {'Help', 'Report', 'Settings', 'Login'}
-                    .map((String choice) {
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Row(
-                      children: [
-                        choice == "Help"
-                            ? Icon(Icons.help, color: Colors.white)
-                            : choice == "Settings"
-                                ? Icon(Icons.settings, color: Colors.white)
-                                : choice == "Report"
-                                    ? Icon(Icons.report, color: Colors.white)
-                                    : Icon(Icons.person, color: Colors.white),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Text(
-                          choice,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList();
-              },
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 70,
+        automaticallyImplyLeading: false,
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => Login()));
+            },
+            child: Text(
+              "Login",
+              style: TextStyle(color: Colors.white, fontSize: 16),
             ),
-          ],
-          title: Row(
-            children: [
-              SvgPicture.asset(
-                logo,
-                width: 50,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 12),
-                child: Text(
-                  "Locanator",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 24,
+          ),
+          PopupMenuButton<String>(
+            color: Color(0xFF44475a),
+            icon: Icon(
+              Icons.menu,
+              size: 27,
+            ),
+            itemBuilder: (BuildContext context) {
+              return {'Help', 'Report', 'Settings', 'Login'}
+                  .map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Row(
+                    children: [
+                      choice == "Help"
+                          ? Icon(Icons.help, color: Colors.white)
+                          : choice == "Settings"
+                              ? Icon(Icons.settings, color: Colors.white)
+                              : Icon(Icons.report, color: Colors.white),
+                      // : Icon(Icons.person, color: Colors.white),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Text(
+                        choice,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
                   ),
+                );
+              }).toList();
+            },
+          ),
+        ],
+        title: Row(
+          children: [
+            SvgPicture.asset(
+              logo,
+              width: 50,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: Text(
+                "Locanator",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 24,
                 ),
               ),
-            ],
-          ),
-          backgroundColor: Color(0xFF282a36),
+            ),
+          ],
         ),
-        body: MapSample(),
+        backgroundColor: Color(0xFF282a36),
       ),
+      body: MapSample(),
+    );
+  }
+
+  loginScreen() {
+    return showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Login();
+      },
     );
   }
 }

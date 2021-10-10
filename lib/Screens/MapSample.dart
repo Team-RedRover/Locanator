@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import '../Database/DbManager.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_guid/flutter_guid.dart';
+import 'package:device_info/device_info.dart';
 import './.env.dart';
 
 class MapSample extends StatefulWidget {
@@ -45,6 +47,7 @@ class MapSampleState extends State<MapSample> {
   double longitude;
   String id;
   bool full = false;
+  List<String> deviceIds;
 
   Future pickImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
@@ -260,6 +263,24 @@ class MapSampleState extends State<MapSample> {
     });
   }
 
+  static Future<String> getIdentifier() async {
+    String identifier;
+    final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
+    try {
+      if (Platform.isAndroid) {
+        var build = await deviceInfoPlugin.androidInfo;
+        identifier = build.androidId; //UUID for Android
+      } else if (Platform.isIOS) {
+        var data = await deviceInfoPlugin.iosInfo;
+        identifier = data.identifierForVendor; //UUID for iOS
+      }
+    } on PlatformException {
+      print('Failed to get platform version');
+    }
+
+    return identifier;
+  }
+
   onCameraClick(BuildContext context) async {
     await pickImage();
     showModalBottomSheet(
@@ -318,8 +339,8 @@ class MapSampleState extends State<MapSample> {
                       onPressed: () async {
                         Navigator.pop(context);
                         uploadTime = DateTime.now();
-                        latitude = 39.5219983;
-                        longitude = -123.184;
+                        latitude = 38.5229883;
+                        longitude = -121.184;
                         print("lat: $latitude, long: $longitude");
                         dynamic response = await dbmanager.getDistanceMatch(
                             latitude, longitude);
@@ -331,10 +352,6 @@ class MapSampleState extends State<MapSample> {
                           int newReports = await dbmanager
                               .incrementReportCount(matchId.toString());
                           if (!mounted) return;
-                          // markers.forEach((element) {
-                          //   print("element id: ${element.markerId}");
-                          // });
-                          // print("match id: $matchId");
                           Marker mark = markers.firstWhere(
                               (marker) => marker.markerId.value == matchId);
                           print("Deleting mark");
@@ -348,6 +365,10 @@ class MapSampleState extends State<MapSample> {
                               false);
                         } else {
                           String id = Guid.newGuid.toString();
+                          String deviceId = await getIdentifier();
+
+                          List<String> deviceIds = [deviceId];
+
                           if (full == true) {
                             addMarker(
                                 latitude, longitude, id, "Full", 1, false);
@@ -356,7 +377,7 @@ class MapSampleState extends State<MapSample> {
                                 latitude, longitude, id, "Empty", 1, false);
                           }
                           dbmanager.uploadPost(image, latitude, longitude,
-                              uploadTime, 1, full, id);
+                              uploadTime, 1, full, id, deviceIds);
                         }
                       },
                     )

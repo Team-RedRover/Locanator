@@ -39,6 +39,7 @@ dependencies:
   google_maps_flutter: ^2.0.11
   geocoding: ^2.0.1
   flutter_polyline_points: ^1.0.0
+  device_info: ^2.0.2
 
 dev_dependencies:
   flutter_test:

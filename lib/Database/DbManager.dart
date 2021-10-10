@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart' as firebase_core;
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../Components/DistanceFinder.dart';
 import 'dart:io';
 
@@ -9,8 +7,15 @@ class DatabaseManager {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<void> uploadPost(File image, double latitude, double longitude,
-      DateTime uploadTime, int numberOfReports, bool full, String id) async {
+  Future<void> uploadPost(
+      File image,
+      double latitude,
+      double longitude,
+      DateTime uploadTime,
+      int numberOfReports,
+      bool full,
+      String id,
+      List<String> deviceIds) async {
     CollectionReference posts = FirebaseFirestore.instance.collection('posts');
     // generate unique guid, no check for clash, but incredibly unlikely so -_-
 
@@ -24,6 +29,7 @@ class DatabaseManager {
           'full': full,
           'numberOfReports': numberOfReports,
           'id': id,
+          'deviceId': deviceIds
         })
         .then((value) =>
             print("'latitude' & 'longitude' merged with existing data!"))
@@ -33,11 +39,12 @@ class DatabaseManager {
   Future<dynamic> loadMarkers() async {
     CollectionReference posts = FirebaseFirestore.instance.collection('posts');
 
-    List<double> lats = List<double>();
-    List<double> longs = List<double>();
-    List<String> ids = List<String>();
-    List<bool> statuses = List<bool>();
-    List<int> listOfReports = List<int>();
+    List<double> lats = [];
+    List<double> longs = [];
+    List<String> ids = [];
+    List<bool> statuses = [];
+    List<int> listOfReports = [];
+    // List<String> deviceIds = [];
 
     await posts.get().then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
@@ -46,11 +53,13 @@ class DatabaseManager {
         String id = doc["id"];
         bool status = doc["full"];
         int numberOfReports = doc['numberOfReports'];
+        // String deviceId = doc["deviceId"];
         lats.add(lat);
         longs.add(long);
         ids.add(id);
         statuses.add(status);
         listOfReports.add(numberOfReports);
+        // deviceIds.add(deviceId);
       });
     });
 

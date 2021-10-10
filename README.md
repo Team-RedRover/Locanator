@@ -1,4 +1,4 @@
-# locanator
+# Locanator
 
 The Locanator app is created by the Red Rover senior team for TISB Hacks 2021.
 
