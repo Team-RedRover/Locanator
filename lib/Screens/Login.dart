@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+// POSSIBLE TODO: admin panel: (add/remove cans, statistics), ML image analysis, user backend ratings, optional user login
+
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();

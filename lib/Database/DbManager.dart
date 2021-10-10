@@ -1,26 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../Components/DistanceFinder.dart';
+import 'package:firebase_core/firebase_core.dart' as firebase_core;
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+
 import 'dart:io';
 
 class DatabaseManager {
   FirebaseAuth auth = FirebaseAuth.instance;
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<void> uploadPost(
-      File image,
-      double latitude,
-      double longitude,
-      DateTime uploadTime,
-      int numberOfReports,
-      bool full,
-      String id,
-      List<String> deviceIds) async {
+  Future<String> uploadPost(
+    File image,
+    double latitude,
+    double longitude,
+    DateTime uploadTime,
+    int numberOfReports,
+    bool full,
+    String id,
+    List<String> deviceIds,
+    String deviceId,
+  ) async {
     CollectionReference posts = FirebaseFirestore.instance.collection('posts');
     // generate unique guid, no check for clash, but incredibly unlikely so -_-
 
-    // uploads data into firestore
-    return posts
+    posts
         .doc(id)
         .set({
           'latitude': latitude,
@@ -34,6 +40,36 @@ class DatabaseManager {
         .then((value) =>
             print("'latitude' & 'longitude' merged with existing data!"))
         .catchError((error) => print("Failed to merge data: $error"));
+
+    String url;
+    String path = 'Images/$id/$deviceId';
+    try {
+      await firebase_storage.FirebaseStorage.instance.ref(path).putFile(image);
+      print("Successfully added media files");
+      url = await getDownloadUrl(path);
+    } on firebase_core.FirebaseException catch (e) {
+      print("Error upload files: ${e.message}");
+    }
+
+    return url;
+  }
+
+  Future<String> getImageUrls(String id) async {
+    firebase_storage.ListResult result = await firebase_storage
+        .FirebaseStorage.instance
+        .ref("/Images/$id")
+        .listAll();
+
+    print("result: ${result.items}");
+
+    return await result.items[0].getDownloadURL();
+  }
+
+  Future<String> getDownloadUrl(String path) async {
+    String downloadURL = await firebase_storage.FirebaseStorage.instance
+        .ref(path)
+        .getDownloadURL();
+    return downloadURL;
   }
 
   Future<dynamic> loadMarkers() async {

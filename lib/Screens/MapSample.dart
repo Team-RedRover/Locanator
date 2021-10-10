@@ -469,8 +469,17 @@ class MapSampleState extends State<MapSample> {
                             addMarker(
                                 latitude, longitude, id, "Empty", 1, false);
                           }
-                          dbmanager.uploadPost(image, latitude, longitude,
-                              uploadTime, 1, full, id, deviceIds);
+                          String imageUrl = await dbmanager.uploadPost(
+                              image,
+                              latitude,
+                              longitude,
+                              uploadTime,
+                              1,
+                              full,
+                              id,
+                              deviceIds,
+                              deviceId);
+                          print("Image URL: $imageUrl");
                         }
                       },
                     )

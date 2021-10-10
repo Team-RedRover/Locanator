@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:locanator/Database/DbManager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,6 +13,8 @@ class MarkerScreen extends StatefulWidget {
 
 class _MarkerScreenState extends State<MarkerScreen> {
   DatabaseManager dbmanager = DatabaseManager();
+  String imageUrl =
+      "https://firebasestorage.googleapis.com/v0/b/locanator-71ddd.appspot.com/o/Images%2F3d52c965-c15d-4b73-9aaf-b40530aa8c7e%2F05953ffc682255e0?alt=media&token=df04aebe-c12a-47b9-9ed5-e5438560e945";
 
   @override
   void initState() {
@@ -60,86 +61,105 @@ class _MarkerScreenState extends State<MarkerScreen> {
                   status = "Full";
                 }
                 return Center(
-                  child: new Container(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 15),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Icon(Icons.report, color: Colors.white),
-                                Text(
-                                  " Reports: ${doc["numberOfReports"]}",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
+                  child: SingleChildScrollView(
+                    child: new Container(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 15),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.report, color: Colors.white),
+                                  Text(
+                                    " Reports: ${doc["numberOfReports"]}",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Icon(Icons.checklist, color: Colors.white),
-                                Text(
-                                  " Status: $status",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.checklist, color: Colors.white),
+                                  Text(
+                                    " Status: $status",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  width: 200,
-                                  child: TextButton(
-                                    style: ButtonStyle(
-                                      alignment: Alignment.center,
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              Colors.blueGrey),
-                                      shape: MaterialStateProperty.all(
-                                        RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(10),
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: 200,
+                                    child: TextButton(
+                                      style: ButtonStyle(
+                                        alignment: Alignment.center,
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.blueGrey),
+                                        shape: MaterialStateProperty.all(
+                                          RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(10),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    onPressed: () async {
-                                      await dbmanager
-                                          .markAsEmpty(widget.markerId);
-                                    },
-                                    child: Row(
-                                      // mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.refresh,
-                                            color: Color(0xFF282a36)),
-                                        Text(
-                                          " Mark as empty",
-                                          style: TextStyle(
-                                            color: Color(0xFF282a36),
-                                            fontSize: 20,
+                                      onPressed: () async {
+                                        await dbmanager
+                                            .markAsEmpty(widget.markerId);
+                                      },
+                                      child: Row(
+                                        // mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.refresh,
+                                              color: Color(0xFF282a36)),
+                                          Text(
+                                            " Mark as empty",
+                                            style: TextStyle(
+                                              color: Color(0xFF282a36),
+                                              fontSize: 20,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 20, 0, 0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Images",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 24),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Image.network(imageUrl),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
